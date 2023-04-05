@@ -1,16 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PARABÉNS</title>
-    <link rel="stylesheet" href="./style.css">
+    <title>Mistério Pt.2</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #ffc7ba;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      #hide {
+        background-color: black;
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+      }
+
+      #hide p, #hide img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        color: white;
+        transform: translate(-50%, -50%);
+      }
+
+      #hide p {
+        font-size: 5em;
+      }
+
+      #hide img {
+        width: 50em;
+        height: 50em;
+        opacity: 0.1;
+        animation: rotate 100s infinite linear;
+      }
+
+      #container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .photo {
+        position: absolute;
+      }
+
+      .texto {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        font-size: 10em;
+        font-weight: 700;
+        text-decoration: underline;
+        border-bottom: 10px solid;
+        animation: moveText 2s ease-in-out infinite, rainbow 2s linear infinite;
+        background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+
+      @keyframes rotate {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(-360deg); }
+      }
+
+      @keyframes rainbow {
+        0% { background-position: 0px 0px; }
+        100% { background-position: 5000px 0px; }
+      }
+
+      @keyframes moveText {
+        0% { color: #ff00ff; top: 90%; }
+        10% { color: aqua; }
+        20% { color: rgb(255, 0, 0); }
+        30% { color: rgb(47, 0, 255); }
+        40% { color: rgb(255, 230, 0); }
+        50% { color: #00ff00; top: 0%; }
+        60% { color: rgb(158, 79, 112); }
+        70% { color: rgb(136, 179, 101); }
+        80% { color: rgb(133, 247, 247); }
+        90% { color: rgb(226, 137, 21); }
+        100% { color: #ff00ff; top: 90%; }
+      }
+    </style>
   </head>
   <body>
-    <main>
-        <h1>Teste</h1>
-    </main>
-	<script src="index.js"></script>
+    <div id="hide">
+      <p>Aumente o volume e clique aqui se tiver coragem!</p>
+      <img src="fotos/cobrinha.png" width="450px" height="450px" />
+    </div>
+    
+    <div id="container"></div>
+    <h1 class="texto rainbow-text">PARABÉNS</h1>
+
+    <audio id="player" autoplay><source src="minha_musica.mp3" type="audio/mp3"></audio>
+
+    <script>
+      const photoCount = 30;
+      const interval = 1000;
+      const container = document.getElementById('container');
+
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+      }
+
+      let lastPhotos = [];
+
+      function addNewPhoto() {
+        let photoNumber = getRandomInt(1, photoCount + 1);
+
+        while (lastPhotos.includes(photoNumber)) {
+          photoNumber = getRandomInt(1, photoCount + 1);
+        }
+
+        const photo = document.createElement('img');
+        photo.src = `fotos/foto_${photoNumber}.jpeg`;
+        photo.classList.add('photo');
+        const maxWidth = container.clientWidth - 100;
+        const maxHeight = container.clientHeight - 1000;
+        const x = getRandomInt(0, maxWidth * 0.5);
+        const y = getRandomInt(0, maxHeight * 1);
+        photo.style.left = `${x}px`;
+        photo.style.top = `${y}px`;
+
+        container.appendChild(photo);
+
+        if (lastPhotos.length >= 5) {
+          lastPhotos.shift();
+        }
+
+        // me mande o código "lamen100" para ganhar um lamen na liberdade hmmmm mhan mhan mhan 
+
+        lastPhotos.push(photoNumber);
+      }
+
+      document.addEventListener('click', musicPlay);
+      function musicPlay() {
+        document.getElementById('player').play();
+        document.removeEventListener('click', musicPlay);
+        document.getElementById('hide').remove();
+
+        addNewPhoto();
+
+        setInterval(() => {
+          addNewPhoto();
+        }, interval);
+      }
+    </script>
   </body>
 </html>
